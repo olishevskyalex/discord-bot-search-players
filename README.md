@@ -15,10 +15,10 @@ Discord bot for finding someone to play games with.
 First you need to create file **data.json**
 **data.json** - This is config file.
 
-### file structure data.json
-<{  
-  "token": <your token>,  
-  "admin-id": <your discord id>,  
-  "games": <your array of games>,  
-  "command-prefix": <your prefix>  
-}>
+#### file structure data.json
+    {  
+      "token": <your token>,  
+      "admin-id": <your discord id>,  
+      "games": <your array of games>,  
+      "command-prefix": <your prefix>  
+    }
