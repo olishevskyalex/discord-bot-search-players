@@ -163,6 +163,8 @@ client.on('message', message => {
 
 	if (userCheck(fullUsername)) {
 		let userObject = getUserObject(fullUsername);
+		let searchActive;
+		userObject.game !== undefined ? searchActive = true : searchActive = false;
 
 		if (userObject.status === 'report') {
 			client.users.cache.get(botData['admin-id']).send( getMessage('Баг репорт', `пользователь: **${fullUsername}**\n\n**Сообщение:**\n${message.content}`) )
@@ -173,8 +175,12 @@ client.on('message', message => {
 			.catch(error => {
 				console.log('Невозможно отправить сообщение в канал.');
 			});
-			deleteUser(fullUsername);
-			return;
+
+			if (searchActive) {
+				userObject.status = 'search';
+			} else {
+				deleteUser(fullUsername);
+			}
 		}
 	}
 
