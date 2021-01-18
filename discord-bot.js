@@ -1,10 +1,7 @@
 'use strict';
 
-const fs = require('fs');
 
-let rawdata = fs.readFileSync('data.json');
-let botData = JSON.parse(rawdata);
-
+const config = require('./config.json');
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
@@ -14,7 +11,7 @@ client.once('ready', () => {
 
 let bot = {
   users: [],
-  games: botData.games,
+  games: config.games,
 }
 
 function getMessage(title, description, fullUsername = null, avatarUrl = null) {
@@ -37,7 +34,7 @@ function getMessage(title, description, fullUsername = null, avatarUrl = null) {
 function gameSelectionMessage() {
   let result = '';
   for (let gameID in bot.games) {
-    result = `${result}**${botData['command-prefix'] + (Number(gameID) + 1)}** - ${bot.games[gameID]}\n`;
+    result = `${result}**${config['command-prefix'] + (Number(gameID) + 1)}** - ${bot.games[gameID]}\n`;
   }
   return result;
 }
@@ -127,7 +124,7 @@ client.on('message', message => {
 
   function сheckSelectedGame(fullUsername, gameNumber, avatarUrl) {
     for (let gameID in bot.games) {
-      if (gameNumber === botData['command-prefix'] + ( Number(gameID) + 1 ) && userCheck(fullUsername) === true) {
+      if (gameNumber === config['command-prefix'] + String( Number(gameID) + 1 ) && userCheck(fullUsername) === true) {
         let userObject = getUserObject(fullUsername);
         userObject.game = bot.games[gameID];
 
@@ -165,7 +162,7 @@ client.on('message', message => {
 		let userObject = getUserObject(fullUsername);
 
 		if (userCheck(fullUsername) && userObject.status === 'report') {
-			client.users.cache.get(botData['admin-id']).send( getMessage('Баг репорт', `пользователь: **${fullUsername}**\n\n**Сообщение:**\n${message.content}`) )
+			client.users.cache.get(config['admin-id']).send( getMessage('Баг репорт', `пользователь: **${fullUsername}**\n\n**Сообщение:**\n${message.content}`) )
 			.catch(error => {
 				console.log(`Невозможно отправить сообщение пользователю: ${fullUsername}`);
 			});
@@ -185,13 +182,13 @@ client.on('message', message => {
 	reportController();
 
 	switch (message.content) {
-    case `${botData['command-prefix']}help`:
-      message.channel.send( getMessage("Информация о боте", `Здравствуй, меня зовут Aika. Я бот, который поможет тебе найти товарища по команде.\n\n**Список команад:**\n **${botData['command-prefix']}start** - Запускает поиск.\n**${botData['command-prefix']}list** - Показывает количество человек находящихся в поиске.\n**${botData['command-prefix']}report** - Позволяет отправить сообщение об ошибке.`, fullUsername, user.displayAvatarURL() ))
+    case `${config['command-prefix']}help`:
+      message.channel.send( getMessage("Информация о боте", `Здравствуй, меня зовут Aika. Я бот, который поможет тебе найти товарища по команде.\n\n**Список команад:**\n **${config['command-prefix']}start** - Запускает поиск.\n**${config['command-prefix']}list** - Показывает количество человек находящихся в поиске.\n**${config['command-prefix']}report** - Позволяет отправить сообщение об ошибке.`, fullUsername, user.displayAvatarURL() ))
 			.catch(error => {
 				console.log('Невозможно отправить сообщение в канал.');
 			});
 			break;
-    case `${botData['command-prefix']}start`:
+    case `${config['command-prefix']}start`:
       if ( !userCheck(fullUsername) ) {
         addUserData(user.id, fullUsername, 'game-selection');
       }
@@ -200,10 +197,10 @@ client.on('message', message => {
 				console.log('Невозможно отправить сообщение в канал.');
 			});
       break;
-    case `${botData['command-prefix']}users`:
+    case `${config['command-prefix']}users`:
       console.log(bot.users);
       break;
-		case `${botData['command-prefix']}report`:
+		case `${config['command-prefix']}report`:
 			if (userCheck(fullUsername) !== true ) {
 				addUserData(user.id, fullUsername, 'report');
 			} else {
@@ -215,7 +212,7 @@ client.on('message', message => {
 				console.log('Невозможно отправить сообщение в канал.');
 			});
 			break;
-		case `${botData['command-prefix']}list`:
+		case `${config['command-prefix']}list`:
 			message.channel.send( getMessage("Статистика по поиску", getStringSearchFull(), fullUsername, user.displayAvatarURL() ));
 			break;
   }
@@ -223,4 +220,4 @@ client.on('message', message => {
   сheckSelectedGame(fullUsername, message.content, user.displayAvatarURL());
 });
 
-client.login(botData.token);
+client.login(config.token);

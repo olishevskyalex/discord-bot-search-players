@@ -12,10 +12,10 @@ Discord bot for finding someone to play games with.
 **[prefix]report** - Command for sending a message about a found bug.  
 
 ## Installation
-First you need to create file **data.json**  
-**data.json** - This is config file.
+First you need to create file **config.json**  
+**config.json** - This is config file.
 
-#### file structure data.json
+#### file structure config.json
     {  
       "token": <your token>,  
       "admin-id": <your discord id>,  
