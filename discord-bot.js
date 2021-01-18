@@ -161,12 +161,10 @@ client.on('message', message => {
     }
   }
 
-	if (userCheck(fullUsername)) {
+	function reportController() {
 		let userObject = getUserObject(fullUsername);
-		let searchActive;
-		userObject.game !== undefined ? searchActive = true : searchActive = false;
 
-		if (userObject.status === 'report') {
+		if (userCheck(fullUsername) && userObject.status === 'report') {
 			client.users.cache.get(botData['admin-id']).send( getMessage('Баг репорт', `пользователь: **${fullUsername}**\n\n**Сообщение:**\n${message.content}`) )
 			.catch(error => {
 				console.log(`Невозможно отправить сообщение пользователю: ${fullUsername}`);
@@ -176,13 +174,15 @@ client.on('message', message => {
 				console.log('Невозможно отправить сообщение в канал.');
 			});
 
-			if (searchActive) {
+			if (userObject.game !== undefined) {
 				userObject.status = 'search';
 			} else {
 				deleteUser(fullUsername);
 			}
 		}
 	}
+
+	reportController();
 
 	switch (message.content) {
     case `${botData['command-prefix']}help`:
